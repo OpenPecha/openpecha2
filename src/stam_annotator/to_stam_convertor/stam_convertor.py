@@ -131,6 +131,7 @@ class AlignmentRepo:
         return (
             self.base_path
             / f"{self.destination_org}"
+            / f"{self.alignment_id}"
             / f"{self.alignment_id}.opa"
             / "meta.json"
         )
@@ -201,9 +202,10 @@ class AlignmentRepo:
 
 
 if __name__ == "__main__":
-    alignment = AlignmentRepo.from_id("A2EAB20E4")
+    alignment = AlignmentRepo.from_id("AB3CAED2A")
     alignment.get_alignment_repo()
     alignment.convert_alignment_repo_to_json()
     alignment.get_aligned_pechas()
+
     # alignment.upload_alignment_repo()
     # alignment.upload_aligned_pechas()

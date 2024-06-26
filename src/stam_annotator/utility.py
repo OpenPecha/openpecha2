@@ -69,15 +69,18 @@ def save_json_file(data: Dict, output_file_path: Union[str, Path]):
 def clone_github_repo(
     org_name: str, repo_name: str, destination_folder: Path, token: str
 ):
-    if destination_folder.exists() and list(destination_folder.rglob("*")):
+    repo_path = destination_folder / repo_name
+    if repo_path.exists() and list(repo_path.rglob("*")):
         pass  # Do nothing
     else:
         try:
-            repo_url = f"https://{token}@github.com/{org_name}/{repo_name}.git"
+            repo_url = f"https://github.com/{org_name}/{repo_name}.git"
+            env = {"GIT_ASKPASS": "echo", "GIT_PASSWORD": token}
             subprocess.run(
-                ["git", "clone", repo_url, str(destination_folder)],
+                ["git", "clone", repo_url, str(repo_path)],
                 check=True,
                 capture_output=True,
+                env=env,
             )
             print(f"[SUCCESS]: Repository {repo_name} cloned successfully.")
 

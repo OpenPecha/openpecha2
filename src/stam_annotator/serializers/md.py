@@ -4,6 +4,8 @@ from typing import Dict, List
 from antx import transfer
 
 from stam_annotator.config import PECHAS_PATH, AnnotationEnum
+from stam_annotator.serializers.config import NEWLINE_NORMALIZATION
+from stam_annotator.serializers.utility import add_newlines_around_hashes
 from stam_annotator.stam_fetcher.alignment import Alignment
 from stam_annotator.stam_fetcher.pecha import Pecha
 
@@ -21,20 +23,37 @@ class Alignment_MD_formatter:
         pechas = list(self.alignment.segment_source.keys())
         pechas_md_content: Dict[str, str] = {pecha_id: "" for pecha_id in pechas}
 
-        for segment_pair in self.alignment.get_segment_pairs():
+        """ Add pecha source to md content """
+        for pecha_id in pechas:
+            pecha = self.alignment.pechas[pecha_id]
+            pecha_source = pecha.meta_data["source"]
+            pecha_md_content = f"source : {pecha_source}\n\n"
+            pechas_md_content[pecha_id] = pecha_md_content
+
+        segment_ann_start = "###### "
+        segment_ann_end = f"{NEWLINE_NORMALIZATION}\n\n"
+        segment_pairs = list(self.alignment.get_segment_pairs())
+        for index, segment_pair in enumerate(segment_pairs):
+            if index == len(segment_pairs) - 1:
+                segment_ann_end = ""
             for segment in segment_pair:
-                pecha_id, text, lang = segment[1], segment[0], segment[2]
+                pecha_id, text = segment[1], segment[0]
                 if pecha_id not in pechas_md_content:
                     continue
-                pechas_md_content[pecha_id] += f"<p lang={lang}>" + text + "</p>\n"
+                text = text.replace("\n", NEWLINE_NORMALIZATION)
+                current_segment = segment_ann_start + text + segment_ann_end
+
+                pechas_md_content[pecha_id] += current_segment
             """Add empty segment for pechas that don't have the segment."""
             segment_sources = [segment[1] for segment in segment_pair]
             for pecha_id in pechas:
                 if pecha_id not in segment_sources:
-                    pechas_md_content[pecha_id] += "<p></p>\n"
+                    current_segment = segment_ann_start + segment_ann_end
+                    pechas_md_content[pecha_id] += current_segment
 
         for pecha_id, md_content in pechas_md_content.items():
-            output_md_file = output_dir / f"{pecha_id}.md"
+            pecha_lang = self.alignment.segment_source[pecha_id]["lang"]
+            output_md_file = output_dir / f"{pecha_id}_{pecha_lang}.md"
             output_md_file.write_text(md_content)
         print(f"[SUCCESS]: Alignment {self.alignment.id_} serialized successfully.")
 
@@ -84,6 +103,10 @@ class Pecha_MD_formatter:
 
     def serialize_volume(self, volume_name: str, output_dir: Path):
         base_text_backup = self.base_texts[volume_name]
+        base_text_backup = base_text_backup.replace(
+            "\n",
+            NEWLINE_NORMALIZATION,
+        )
         base_text_with_ann = base_text_backup
         volume_annotations = self.grouped_annotations[volume_name]
 
@@ -93,6 +116,7 @@ class Pecha_MD_formatter:
             )
 
         output_md_file = output_dir / f"{self.pecha_id}_{volume_name}.md"
+        base_text_with_ann = add_newlines_around_hashes(base_text_with_ann)
         output_md_file.write_text(base_text_with_ann)
 
     @staticmethod
@@ -100,21 +124,29 @@ class Pecha_MD_formatter:
         base_text_with_ann: str, base_text: str, ann_type: str, annotations: List[Dict]
     ) -> str:
         if ann_type == AnnotationEnum.book_title.value:
-            ann_style = [["BookTitle start", "(<h1>)"], ["BookTitle end", "(</h1>)"]]
+            ann_style = [["BookTitle start", "(# )"]]
+        if ann_type == AnnotationEnum.sub_title.value:
+            ann_style = [["SubTitle start", "(## )"]]
         if ann_type == AnnotationEnum.chapter.value:
-            ann_style = [["Chapter start", "(<h2>)"], ["Chapter end", "(</h2>)"]]
+            ann_style = [["Chapter start", "(### )"]]
         if ann_type == AnnotationEnum.sabche.value:
-            ann_style = [["Sabche start", "(<h3>)"], ["Sabche end", "(</h3>)"]]
+            ann_style = [["Sabche start", "(#### )"]]
+        if ann_type == AnnotationEnum.pagination.value:
+            ann_style = [["Pagination start", "(##### )"]]
+        if ann_type == AnnotationEnum.citation.value:
+            ann_style = [["Citation start", "(> )"]]
+        if ann_type == AnnotationEnum.tsawa.value:
+            ann_style = [["Tsawa start", "(>> )"]]
+
         if ann_type == AnnotationEnum.author.value:
-            ann_style = [["Author start", "(<i>—)"], ["Author end", "(—</i>)"]]
+            ann_style = [["Author start", "(===>)"], ["Author end", "(<===)"]]
         if ann_type == AnnotationEnum.yigchung.value:
-            ann_style = [["Yigchung start", "(<i>)"], ["Yigchung end", "(</i>)"]]
+            ann_style = [["Yigchung start", "(--->)"], ["Yigchung end", "(<---)"]]
         if ann_type == AnnotationEnum.quotation.value:
             ann_style = [
-                ["Quotation start", "(<blockquote>)"],
-                ["Quotation end", "(</blockquote>)"],
+                ["Quotation start", "(<<<)"],
+                ["Quotation end", "(>>>)"],
             ]
-
         for annotation in annotations:
             start, end = annotation["span"]["start"], annotation["span"]["end"]
             if start >= end:
@@ -123,9 +155,15 @@ class Pecha_MD_formatter:
                 base_text[:start]
                 + ann_style[0][1]
                 + base_text[start : end + 1]  # noqa
-                + ann_style[1][1]
+                + (
+                    ann_style[1][1]
+                    if len(ann_style) > 1 and len(ann_style[1]) > 1
+                    else ""
+                )
                 + base_text[end + 1 :]  # noqa
             )
+
+            print(f"Transfering  {ann_style[0][0]} annotation")
             base_text_with_ann = transfer(
                 curr_base_text_with_ann, ann_style, base_text_with_ann, output="txt"
             )
@@ -139,3 +177,6 @@ if __name__ == "__main__":
     alignment = Alignment_MD_formatter.from_id("AB3CAED2A", GITHUB_TOKEN)
     output_dir = Path(".")
     alignment.serialize(output_dir)
+
+    # pecha = Pecha_MD_formatter.from_id("P000216", GITHUB_TOKEN)
+    # pecha.serialize(Path("."))

@@ -29,3 +29,6 @@ def test_pecha_md_serializer():
     expected_output_content = (data_folder / "expected_output.md").read_text()
     assert output_file.read_text() == expected_output_content
     output_file.unlink()
+
+
+test_pecha_md_serializer()
