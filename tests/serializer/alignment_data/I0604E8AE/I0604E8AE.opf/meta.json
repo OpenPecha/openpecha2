@@ -1,0 +1,32 @@
+{
+    "id": "I0604E8AE",
+    "default_language": "bo",
+    "source": "",
+    "initial_creation_type": "tmx",
+    "imported": "2022-12-14 10:35:38",
+    "last_modified": "2022-12-14 10:35:38",
+    "source_metadata": {
+        "creationtool": "InterText",
+        "creationtoolversion": "1.0",
+        "datatype": "PlainText",
+        "segtype": "block",
+        "adminlang": "en-us",
+        "srclang": "bo",
+        "o-tmf": "XML aligned text",
+        "eft-text-id": "UT22084-066-002",
+        "eft-text-version": "1.1.2 2020",
+        "title": "Toh_244-Proper_Dharma_Conduct-v2"
+    },
+    "bases": {
+        "884E": {
+            "source_metadata": null,
+            "order": 1,
+            "base_file": "884E.txt",
+            "statistics": null
+        }
+    },
+    "copyright": {
+        "status": "Unknown",
+        "notice": ""
+    }
+}

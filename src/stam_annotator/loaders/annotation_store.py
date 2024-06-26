@@ -4,7 +4,7 @@ from typing import Any, Dict, List, Optional
 from pydantic import BaseModel, Field, field_validator
 
 from stam_annotator.config import AnnotationEnum, AnnotationGroupEnum
-from stam_annotator.opf_loader import OpfAnnotation, Span
+from stam_annotator.loaders.opf_loader import OpfAnnotation, Span
 from stam_annotator.utility import get_uuid
 
 

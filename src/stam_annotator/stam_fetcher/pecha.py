@@ -5,13 +5,9 @@ from typing import Dict, List, Optional, Tuple
 from stam import Annotation, AnnotationStore
 
 from stam_annotator.config import PECHAS_PATH, AnnotationEnum, AnnotationGroupEnum
-from stam_annotator.exceptions import RepoCloneError, RepoDoesNotExist
-from stam_annotator.stam_fetcher.utility import (
-    add_base_path_to_stam_annotation_files,
-    check_repo_exists,
-    clone_repo,
-)
-from stam_annotator.utility import get_enum_value_if_match_ignore_case
+from stam_annotator.loaders.utility import get_enum_value_if_match_ignore_case
+from stam_annotator.stam_fetcher.utility import add_base_path_to_stam_annotation_files
+from stam_annotator.utility import clone_github_repo
 
 ORGANIZATION = "PechaData"
 
@@ -38,21 +34,7 @@ class Pecha:
     @classmethod
     def from_id(cls, id_: str, github_token: str, out_path: Path = PECHAS_PATH):
         """Check if repo exists in github"""
-        if not (out_path / f"{id_}").exists():
-            try:
-                check_repo_exists(github_token, ORGANIZATION, repo_name=id_)
-                clone_repo(
-                    ORGANIZATION,
-                    id_,
-                    github_token,
-                    destination_folder=out_path / f"{id_}",
-                )
-            except RepoDoesNotExist as error:
-                print(f"Pecha {error.message}")
-                return None
-            except RepoCloneError as error:
-                print(f"Pecha {error.message}")
-                return None
+        clone_github_repo(ORGANIZATION, id_, out_path, github_token)
 
         cls.base_path = out_path / f"{id_}"
         return cls(id_, cls.base_path)
@@ -131,7 +113,7 @@ class Pecha:
         annotation_type: Optional[AnnotationEnum] = None,
     ) -> Optional[Dict]:
         if annotation_group is None or annotation_type is None:
-            print("Please provide annotation_group and annotation_type")
+            print("[INFO]: Please provide annotation_group and annotation_type")
             return None
 
         annotations = {}

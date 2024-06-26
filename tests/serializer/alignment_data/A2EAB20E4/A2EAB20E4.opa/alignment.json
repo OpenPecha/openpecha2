@@ -1,0 +1,30 @@
+{
+    "segment_sources": {
+        "I0604E8AE": {
+            "type": "translation",
+            "relation": "source",
+            "lang": "bo",
+            "base": "884E"
+        },
+        "I95FE2C27": {
+            "type": "translation",
+            "relation": "target",
+            "lang": "en-us",
+            "base": "8F35"
+        }
+    },
+    "segment_pairs": {
+        "954edbb41a36436f9267d39210777863": {
+            "I0604E8AE": "8e14660b821e412da892636f72fbf9a0",
+            "I95FE2C27": "e5023f9cabb04226aea775b22e00c227"
+        },
+        "8131315da78f4d95a5a0c5d9a6841223": {
+            "I0604E8AE": "d304b670057248deacb10ab0b559dda4",
+            "I95FE2C27": "09bdd3b3b4b64934b2cff5c5678d74c5"
+        },
+        "327ebf65fea540079127e16ecc3aeae8": {
+            "I0604E8AE": "aec80b919c044707b8e77b136c857337",
+            "I95FE2C27": "31c687f5cb284cc7b8af3023de4a16cf"
+        }
+    }
+}

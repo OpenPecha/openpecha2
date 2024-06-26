@@ -4,8 +4,8 @@ from stam_annotator.serializers.md import Pecha_MD_formatter
 from stam_annotator.stam_fetcher.pecha import Pecha
 
 
-def test_md_serializer():
-    data_folder = Path(__file__).parent.absolute() / "data"
+def test_pecha_md_serializer():
+    data_folder = Path(__file__).parent.absolute() / "pecha_data"
     pecha_id = "P000216"
     pecha_path = data_folder / pecha_id
     pecha = Pecha(pecha_id, pecha_path)
@@ -29,6 +29,3 @@ def test_md_serializer():
     expected_output_content = (data_folder / "expected_output.md").read_text()
     assert output_file.read_text() == expected_output_content
     output_file.unlink()
-
-
-test_md_serializer()

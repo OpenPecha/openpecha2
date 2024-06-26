@@ -3,7 +3,8 @@ from typing import Dict
 
 from pydantic import BaseModel, field_validator
 
-from stam_annotator.utility import load_opa_annotations_from_yaml, read_json_to_dict
+from stam_annotator.loaders.utility import load_opa_annotations_from_yaml
+from stam_annotator.utility import read_json_to_dict
 
 
 class SegmentSource(BaseModel):

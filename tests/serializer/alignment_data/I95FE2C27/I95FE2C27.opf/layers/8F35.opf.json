@@ -1,0 +1,114 @@
+{
+  "@type": "AnnotationStore",
+  "@id": "6ab9dac7f935424e87b1961b2deda733",
+  "resources": [
+    {
+      "@type": "TextResource",
+      "@id": "8F35.txt",
+      "@include": "I95FE2C27.opf/base/8F35.txt"
+    }
+  ],
+  "annotationsets": [
+    {
+      "@type": "AnnotationDataSet",
+      "@id": "b0f45cfff46349f0a72438ab1052883a",
+      "keys": [
+        {
+          "@type": "DataKey",
+          "@id": "Structure Type"
+        }
+      ],
+      "data": [
+        {
+          "@type": "AnnotationData",
+          "@id": "99432d53171545baa627228a27b85522",
+          "key": "Structure Type",
+          "value": {
+            "@type": "String",
+            "value": "Segment"
+          }
+        }
+      ]
+    }
+  ],
+  "annotations": [
+    {
+      "@type": "Annotation",
+      "@id": "e5023f9cabb04226aea775b22e00c227",
+      "target": {
+        "@type": "TextSelector",
+        "resource": "8F35.txt",
+        "offset": {
+          "@type": "Offset",
+          "begin": {
+            "@type": "BeginAlignedCursor",
+            "value": 0
+          },
+          "end": {
+            "@type": "BeginAlignedCursor",
+            "value": 45
+          }
+        }
+      },
+      "data": [
+        {
+          "@type": "AnnotationData",
+          "@id": "99432d53171545baa627228a27b85522",
+          "set": "b0f45cfff46349f0a72438ab1052883a"
+        }
+      ]
+    },
+    {
+      "@type": "Annotation",
+      "@id": "09bdd3b3b4b64934b2cff5c5678d74c5",
+      "target": {
+        "@type": "TextSelector",
+        "resource": "8F35.txt",
+        "offset": {
+          "@type": "Offset",
+          "begin": {
+            "@type": "BeginAlignedCursor",
+            "value": 47
+          },
+          "end": {
+            "@type": "BeginAlignedCursor",
+            "value": 85
+          }
+        }
+      },
+      "data": [
+        {
+          "@type": "AnnotationData",
+          "@id": "99432d53171545baa627228a27b85522",
+          "set": "b0f45cfff46349f0a72438ab1052883a"
+        }
+      ]
+    },
+    {
+      "@type": "Annotation",
+      "@id": "31c687f5cb284cc7b8af3023de4a16cf",
+      "target": {
+        "@type": "TextSelector",
+        "resource": "8F35.txt",
+        "offset": {
+          "@type": "Offset",
+          "begin": {
+            "@type": "BeginAlignedCursor",
+            "value": 87
+          },
+          "end": {
+            "@type": "BeginAlignedCursor",
+            "value": 114
+          }
+        }
+      },
+      "data": [
+        {
+          "@type": "AnnotationData",
+          "@id": "99432d53171545baa627228a27b85522",
+          "set": "b0f45cfff46349f0a72438ab1052883a"
+        }
+      ]
+    }
+  ]
+}

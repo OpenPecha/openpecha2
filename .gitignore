@@ -3,6 +3,7 @@ __pycache__/
 *.py[cod]
 *$py.class
 github_token.py
+tests/serializer/pecha_data/P000216/P000216.opf/layers/v001.opf.json
 
 # C extensions
 *.so
