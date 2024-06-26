@@ -1,7 +1,7 @@
 from pathlib import Path
 
-from stam_annotator.serializers.md import Pecha_MD_formatter
-from stam_annotator.stam_fetcher.pecha import Pecha
+from openpecha2.core.pecha import Pecha
+from openpecha2.serializers.md import Pecha_MD_formatter
 
 
 def test_pecha_md_serializer():

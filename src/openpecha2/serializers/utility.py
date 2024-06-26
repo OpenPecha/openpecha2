@@ -1,6 +1,6 @@
 from typing import List
 
-from stam_annotator.serializers.config import NEWLINE_NORMALIZATION
+from openpecha2.serializers.config import NEWLINE_NORMALIZATION
 
 
 def add_newlines_around_hashes(input_string):

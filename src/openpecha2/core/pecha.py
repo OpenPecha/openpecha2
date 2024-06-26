@@ -4,10 +4,10 @@ from typing import Dict, List, Optional, Tuple
 
 from stam import Annotation, AnnotationStore
 
-from stam_annotator.config import PECHAS_PATH, AnnotationEnum, AnnotationGroupEnum
-from stam_annotator.loaders.utility import get_enum_value_if_match_ignore_case
-from stam_annotator.stam_fetcher.utility import add_base_path_to_stam_annotation_files
-from stam_annotator.utility import clone_github_repo
+from openpecha2.config import PECHAS_PATH, AnnotationEnum, AnnotationGroupEnum
+from openpecha2.github_utils import clone_github_repo
+from openpecha2.utility import add_base_path_to_stam_annotation_files
+from openpecha2.utils.opa_opf_loader import get_enum_value_if_match_ignore_case
 
 ORGANIZATION = "PechaData"
 
@@ -131,8 +131,8 @@ class Pecha:
 
 if __name__ == "__main__":
 
-    from stam_annotator.config import AnnotationEnum, AnnotationGroupEnum
-    from stam_annotator.github_token import GITHUB_TOKEN
+    from openpecha2.config import AnnotationEnum, AnnotationGroupEnum
+    from openpecha2.github_token import GITHUB_TOKEN
 
     pecha_repo = Pecha.from_id("P000216", GITHUB_TOKEN)
     annotations = pecha_repo.get_annotations()["v001"]

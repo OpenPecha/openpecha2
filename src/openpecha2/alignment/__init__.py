@@ -2,9 +2,9 @@ import json
 from pathlib import Path
 from typing import Dict, List, Tuple
 
-from stam_annotator.config import PECHAS_PATH
-from stam_annotator.stam_fetcher.pecha import Pecha
-from stam_annotator.utility import clone_github_repo
+from openpecha2.config import PECHAS_PATH
+from openpecha2.core.pecha import Pecha
+from openpecha2.github_utils import clone_github_repo
 
 ORGANIZATION = "PechaData"
 
@@ -73,11 +73,3 @@ class Alignment:
             cls.base_path,
             github_token,
         )
-
-
-if __name__ == "__main__":
-    from stam_annotator.github_token import GITHUB_TOKEN
-
-    alignment = Alignment.from_id("AB3CAED2A", GITHUB_TOKEN)
-    for segment_pair in alignment.get_segment_pairs():
-        print(segment_pair)

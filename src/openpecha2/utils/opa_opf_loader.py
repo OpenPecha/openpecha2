@@ -1,8 +1,8 @@
 import yaml
 
-from stam_annotator.config import AnnotationEnum
-from stam_annotator.exceptions import CustomDataValidationError
-from stam_annotator.utility import get_uuid, replace_key
+from openpecha2.config import AnnotationEnum
+from openpecha2.exceptions import CustomDataValidationError
+from openpecha2.utility import get_uuid, replace_key
 
 
 def load_opf_annotations_from_yaml(yaml_file):

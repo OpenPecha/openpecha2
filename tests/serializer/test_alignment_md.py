@@ -1,7 +1,7 @@
 from pathlib import Path
 
-from stam_annotator.serializers.md import Alignment_MD_formatter
-from stam_annotator.stam_fetcher.alignment import Alignment
+from openpecha2.alignment import Alignment
+from openpecha2.serializers.md import Alignment_MD_formatter
 
 
 def test_alignment_md_serializer():

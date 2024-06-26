@@ -2,8 +2,8 @@ from typing import Any, Dict, Optional
 
 from pydantic import BaseModel, Field, ValidationError, ValidationInfo, field_validator
 
-from stam_annotator.exceptions import CustomDataValidationError
-from stam_annotator.utility import get_uuid
+from openpecha2.exceptions import CustomDataValidationError
+from openpecha2.utility import get_uuid
 
 
 class Span(BaseModel):

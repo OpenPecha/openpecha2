@@ -2,8 +2,8 @@ from pathlib import Path
 
 from config import data_folder
 
-from stam_annotator.loaders.opf_loader import create_opf_annotation_instance
-from stam_annotator.loaders.utility import load_opf_annotations_from_yaml
+from openpecha2.utils.opa_opf_loader import load_opf_annotations_from_yaml
+from openpecha2.utils.opf import create_opf_annotation_instance
 
 
 def test_create_annotation_loader():

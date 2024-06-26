@@ -1,10 +1,10 @@
+import json
 from pathlib import Path
 from typing import Dict
 
 from pydantic import BaseModel, field_validator
 
-from stam_annotator.loaders.utility import load_opa_annotations_from_yaml
-from stam_annotator.utility import read_json_to_dict
+from openpecha2.utils.opa_opf_loader import load_opa_annotations_from_yaml
 
 
 class SegmentSource(BaseModel):
@@ -47,5 +47,6 @@ def create_opa_annotation_from_json(json_path: Path) -> OpaAnnotation:
     """
     Reads a JSON file and returns an OpaAnnotation instance.
     """
-    data = read_json_to_dict(json_path)
-    return OpaAnnotation(**data)
+    with open(json_path, encoding="utf-8") as file:
+        data = json.load(file)
+        return OpaAnnotation(**data)

@@ -2,69 +2,11 @@ import json
 from datetime import datetime
 from json import JSONEncoder
 from pathlib import Path
-from typing import Dict, List, Union
+from typing import Dict, List
 
 import stam
 import yaml
-from github import Github, GithubException
 from stam import Annotations
-
-
-def make_local_folder(destination_folder: Path) -> Path:
-    destination_folder.mkdir(parents=True, exist_ok=True)
-    return destination_folder
-
-
-def create_github_repo(org_name: str, repo_name: str, token: str) -> bool:
-    try:
-        g = Github(token)
-        org = g.get_organization(org_name)
-        org.create_repo(repo_name)
-        print(f"[SUCCESS]: Repository {repo_name} created successfully")
-        return True
-    except:  # noqa
-        print(f"[INFO]: Repo {repo_name} already exists")
-        return False
-
-
-def upload_files_to_github_repo(
-    org_name: str,
-    repo_name: str,
-    project_path: Path,
-    token: str,
-    commit_message: Union[str, None] = None,
-):
-    g = Github(token)
-    repo = g.get_organization(org_name).get_repo(repo_name)
-    for file in project_path.rglob("*"):
-        if file.is_dir():
-            continue
-        with open(file, encoding="utf-8") as f:
-            data = f.read()
-        """upload file to github repo """
-        relative_file_path = file.relative_to(project_path)
-
-        try:
-            contents = repo.get_contents(str(relative_file_path), ref="main")
-            # If file exists, update it
-            file_commit_message = (
-                commit_message if commit_message else f"Update {file.name}"
-            )
-            repo.update_file(
-                contents.path, file_commit_message, data, contents.sha, branch="main"
-            )
-        except GithubException as e:
-            if e.status == 404:
-                # If file does not exist, create it
-                file_commit_message = (
-                    commit_message if commit_message else f"Create {file.name}"
-                )
-                repo.create_file(
-                    str(relative_file_path), file_commit_message, data, branch="main"
-                )
-            else:
-                # Handle other exceptions
-                print(f"[ERROR]: Uploading file to github {relative_file_path}: {e}")
 
 
 def get_folder_structure(path: Path):

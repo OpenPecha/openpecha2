@@ -3,22 +3,20 @@ import shutil
 from pathlib import Path
 from typing import Dict
 
-from stam_annotator.config import ROOT_DIR, AnnotationGroupEnum
-from stam_annotator.github_token import GITHUB_TOKEN
-from stam_annotator.stam_manager import combine_stams
-from stam_annotator.to_stam_convertor.opf_to_stam import opf_to_stam_pipeline
-from stam_annotator.to_stam_convertor.utility import (
-    convert_yml_file_to_json,
+from openpecha2.config import ROOT_DIR, AnnotationGroupEnum
+from openpecha2.github_token import GITHUB_TOKEN
+from openpecha2.github_utils import (
+    clone_github_repo,
     create_github_repo,
-    get_folder_structure,
-    make_local_folder,
-    replace_parent_folder_name,
     upload_files_to_github_repo,
 )
-from stam_annotator.utility import (
-    clone_github_repo,
-    save_annotation_store,
-    sort_dict_by_path_strings,
+from openpecha2.utility import save_annotation_store, sort_dict_by_path_strings
+from openpecha2.utils.opf_to_stam import opf_to_stam_pipeline
+from openpecha2.utils.stam_manager import combine_stams
+from openpecha2.utils.utils import (
+    convert_yml_file_to_json,
+    get_folder_structure,
+    replace_parent_folder_name,
 )
 
 SOURCE_ORG = "OpenPecha-Data"
@@ -42,7 +40,8 @@ class PechaRepo:
 
     @classmethod
     def from_id(cls, id_: str) -> "PechaRepo":
-        cls.base_path = make_local_folder(ROOT_DIR / id_)
+        Path(ROOT_DIR / id_).mkdir(parents=True, exist_ok=True)
+        cls.base_path = Path(ROOT_DIR / id_)
         return PechaRepo(id_, cls.base_path)
 
     def get_pecha_repo(self):
@@ -54,7 +53,9 @@ class PechaRepo:
     def convert_pecha_repo_to_stam(self):
         group_files = get_folder_structure(self.base_path / self.source_org)
         group_files = sort_dict_by_path_strings(group_files)
-        make_local_folder(self.base_path / self.destination_org / self.pecha_id)
+        Path(self.base_path / self.destination_org / self.pecha_id).mkdir(
+            parents=True, exist_ok=True
+        )
         for parent_dir, documents in group_files.items():
             new_parent_dir = replace_parent_folder_name(
                 parent_dir, self.source_org, self.destination_org
@@ -138,7 +139,8 @@ class AlignmentRepo:
 
     @classmethod
     def from_id(cls, id_: str) -> "AlignmentRepo":
-        cls.base_path = make_local_folder(ROOT_DIR / id_)
+        Path(ROOT_DIR / id_).mkdir(parents=True, exist_ok=True)
+        cls.base_path = Path(ROOT_DIR / id_)
         return AlignmentRepo(id_, cls.base_path)
 
     def load_pecha_repos(self):
@@ -156,7 +158,7 @@ class AlignmentRepo:
 
     def convert_alignment_repo_to_json(self):
         group_files = get_folder_structure(self.base_path / self.source_org)
-        make_local_folder(self.base_path / self.destination_org)
+        Path(self.base_path / self.destination_org).mkdir(parents=True, exist_ok=True)
         for parent_dir, documents in group_files.items():
             new_parent_dir = replace_parent_folder_name(
                 parent_dir, self.source_org, self.destination_org
@@ -164,7 +166,7 @@ class AlignmentRepo:
             """loop through a files and folder in same dir."""
             for doc, tag in documents:
                 if tag == "folder":
-                    make_local_folder(new_parent_dir / doc)
+                    Path(new_parent_dir / doc).mkdir(parents=True, exist_ok=True)
                     continue
                 if doc.endswith(".yml"):
                     yml_file_path = parent_dir / doc

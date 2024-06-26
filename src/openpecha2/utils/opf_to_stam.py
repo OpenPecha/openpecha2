@@ -5,14 +5,14 @@ from uuid import uuid4
 
 from stam import AnnotationStore, Offset, Selector
 
-from stam_annotator.config import AnnotationGroupEnum
-from stam_annotator.exceptions import CustomDataValidationError
-from stam_annotator.loaders.annotation_store import (
+from openpecha2.config import AnnotationGroupEnum
+from openpecha2.exceptions import CustomDataValidationError
+from openpecha2.utils.opa_opf_loader import load_opf_annotations_from_yaml
+from openpecha2.utils.opf import create_opf_annotation_instance
+from openpecha2.utils.stam_formatter import (
     Annotation_Store,
     convert_opf_for_pre_stam_format,
 )
-from stam_annotator.loaders.opf_loader import create_opf_annotation_instance
-from stam_annotator.loaders.utility import load_opf_annotations_from_yaml
 
 
 def get_uuid():

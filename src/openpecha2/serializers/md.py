@@ -3,11 +3,11 @@ from typing import Dict, List
 
 from antx import transfer
 
-from stam_annotator.config import PECHAS_PATH, AnnotationEnum
-from stam_annotator.serializers.config import NEWLINE_NORMALIZATION
-from stam_annotator.serializers.utility import add_newlines_around_hashes
-from stam_annotator.stam_fetcher.alignment import Alignment
-from stam_annotator.stam_fetcher.pecha import Pecha
+from openpecha2.alignment import Alignment
+from openpecha2.config import PECHAS_PATH, AnnotationEnum
+from openpecha2.core.pecha import Pecha
+from openpecha2.serializers.config import NEWLINE_NORMALIZATION
+from openpecha2.serializers.utility import add_newlines_around_hashes
 
 
 class Alignment_MD_formatter:
@@ -172,7 +172,7 @@ class Pecha_MD_formatter:
 
 
 if __name__ == "__main__":
-    from stam_annotator.github_token import GITHUB_TOKEN
+    from openpecha2.github_token import GITHUB_TOKEN
 
     alignment = Alignment_MD_formatter.from_id("AB3CAED2A", GITHUB_TOKEN)
     output_dir = Path(".")

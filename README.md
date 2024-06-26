@@ -7,7 +7,7 @@
 
 <!-- Replace with 1-sentence description about what this tool is or does.-->
 
-<h3 align="center">STAM ANNOTATOR</h3>
+<h3 align="center">openpecha2</h3>
 
 ## Description
 
