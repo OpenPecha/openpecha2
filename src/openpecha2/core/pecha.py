@@ -127,15 +127,3 @@ class Pecha:
             volume_annotations = self.format_annotations_as_dict(stam_annotations)
             annotations[volume_name] = volume_annotations
         return annotations
-
-
-if __name__ == "__main__":
-
-    from openpecha2.config import AnnotationEnum, AnnotationGroupEnum
-    from openpecha2.github_token import GITHUB_TOKEN
-
-    pecha_repo = Pecha.from_id("P000216", GITHUB_TOKEN)
-    annotations = pecha_repo.get_annotations()["v001"]
-
-    for key, value in annotations.items():
-        print(value)

@@ -169,14 +169,3 @@ class Pecha_MD_formatter:
             )
 
         return base_text_with_ann
-
-
-if __name__ == "__main__":
-    from openpecha2.github_token import GITHUB_TOKEN
-
-    alignment = Alignment_MD_formatter.from_id("AB3CAED2A", GITHUB_TOKEN)
-    output_dir = Path(".")
-    alignment.serialize(output_dir)
-
-    # pecha = Pecha_MD_formatter.from_id("P000216", GITHUB_TOKEN)
-    # pecha.serialize(Path("."))
