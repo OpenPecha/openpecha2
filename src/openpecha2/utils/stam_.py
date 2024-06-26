@@ -1,10 +1,10 @@
 import json
+import os
 import shutil
 from pathlib import Path
 from typing import Dict
 
 from openpecha2.config import ROOT_DIR, AnnotationGroupEnum
-from openpecha2.github_token import GITHUB_TOKEN
 from openpecha2.github_utils import (
     clone_github_repo,
     create_github_repo,
@@ -21,6 +21,14 @@ from openpecha2.utils.utils import (
 
 SOURCE_ORG = "OpenPecha-Data"
 DESTINATION_ORG = "PechaData"
+
+
+GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
+if not GITHUB_TOKEN:
+    raise OSError("GITHUB_TOKEN environment variable is not set")
+
+# Ensure GITHUB_TOKEN is str
+assert isinstance(GITHUB_TOKEN, str)
 
 
 class PechaRepo:
@@ -201,13 +209,3 @@ class AlignmentRepo:
     def upload_aligned_pechas(self):
         for _, pecha_repo in self.pecha_repos.items():
             pecha_repo.upload_pecha_repo()
-
-
-if __name__ == "__main__":
-    alignment = AlignmentRepo.from_id("AB3CAED2A")
-    alignment.get_alignment_repo()
-    alignment.convert_alignment_repo_to_json()
-    alignment.get_aligned_pechas()
-
-    # alignment.upload_alignment_repo()
-    # alignment.upload_aligned_pechas()
