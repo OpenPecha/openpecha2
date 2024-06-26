@@ -4,8 +4,6 @@ from typing import Dict
 
 from pydantic import BaseModel, field_validator
 
-from openpecha2.utils.opa_opf_loader import load_opa_annotations_from_yaml
-
 
 class SegmentSource(BaseModel):
     type: str
@@ -36,8 +34,7 @@ class OpaAnnotation(BaseModel):
         return iter(self.segment_pairs.items())
 
 
-def create_opa_annotation_instance(yaml_path: Path) -> OpaAnnotation:
-    data = load_opa_annotations_from_yaml(yaml_path)
+def create_opa_annotation_instance(data: Dict) -> OpaAnnotation:
     return OpaAnnotation(
         segment_sources=data["segment_sources"], segment_pairs=data["segment_pairs"]
     )

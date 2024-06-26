@@ -14,6 +14,9 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    env:
+      GITHUB_TOKEN: dummy_token_value
+
     steps:
     - uses: actions/checkout@v3
     
@@ -32,4 +35,4 @@ jobs:
       run: PYTHONPATH=src pytest
     
     - name: Test Coverage
-      run: PYTHONPATH=src pytest --cov stam_annotator
+      run: PYTHONPATH=src pytest --cov openpecha2
