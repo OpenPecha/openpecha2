@@ -6,7 +6,11 @@ from stam import Annotation, AnnotationStore
 
 from stam_annotator.config import PECHAS_PATH, AnnotationEnum, AnnotationGroupEnum
 from stam_annotator.exceptions import RepoCloneError, RepoDoesNotExist
-from stam_annotator.stam_fetcher.utility import check_repo_exists, clone_repo
+from stam_annotator.stam_fetcher.utility import (
+    add_base_path_to_stam_annotation_files,
+    check_repo_exists,
+    clone_repo,
+)
 from stam_annotator.utility import get_enum_value_if_match_ignore_case
 
 ORGANIZATION = "PechaData"
@@ -17,6 +21,7 @@ class Pecha:
         self.id_ = id_
         self.base_path = base_path
         self.pecha_volumes: Dict[str, AnnotationStore] = {}
+        add_base_path_to_stam_annotation_files(self.base_path)
         self.load_pecha()
 
     @property
@@ -52,17 +57,23 @@ class Pecha:
         cls.base_path = out_path / f"{id_}"
         return cls(id_, cls.base_path)
 
-    def get_meta_data(self):
+    @property
+    def meta_data(self):
         for file_path in self.base_path.rglob("meta.json"):
             with file_path.open() as file:
                 return json.load(file)
         return {}
 
-    def get_index_data(self):
+    @property
+    def index_data(self):
         for file_path in self.base_path.rglob("index.json"):
             with file_path.open() as file:
                 return json.load(file)
         return {}
+
+    def get_base_text(self, volume_name: str) -> str:
+        resource = list(self.base_path.rglob(f"{volume_name}.txt"))[0]
+        return resource.read_text()
 
     @staticmethod
     def get_span_from_annotation(annotation: Annotation) -> Dict:
@@ -142,6 +153,7 @@ if __name__ == "__main__":
     from stam_annotator.github_token import GITHUB_TOKEN
 
     pecha_repo = Pecha.from_id("P000216", GITHUB_TOKEN)
-    annotations = pecha_repo.get_annotations()
+    annotations = pecha_repo.get_annotations()["v001"]
+
     for key, value in annotations.items():
-        print(key, value)
+        print(value)

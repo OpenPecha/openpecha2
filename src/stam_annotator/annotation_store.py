@@ -1,11 +1,11 @@
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional
 
 from pydantic import BaseModel, Field, field_validator
 
 from stam_annotator.config import AnnotationEnum, AnnotationGroupEnum
 from stam_annotator.opf_loader import OpfAnnotation, Span
-from stam_annotator.utility import get_filename_without_extension, get_uuid
+from stam_annotator.utility import get_uuid
 
 
 class Annotation_Data(BaseModel):
@@ -17,8 +17,8 @@ class Annotation_Data(BaseModel):
 
 
 class Resource(BaseModel):
-    resource_id: str
-    text: str
+    id_: str
+    file_path: Path
 
 
 class Annotation(BaseModel):
@@ -75,10 +75,8 @@ class Annotation_Store(BaseModel):
         self.annotations.append(annotation)
 
 
-def create_resource(file_path: Union[str, Path]):
-    resource_id = get_filename_without_extension(file_path)
-    text = Path(file_path).read_text(encoding="utf-8")
-    return Resource(resource_id=resource_id, text=text)
+def create_resource(file_path: Path):
+    return Resource(id_=file_path.name, file_path=file_path)
 
 
 def create_data_set(data_set_id: str, data_set_key: AnnotationGroupEnum):
@@ -111,7 +109,7 @@ def add_annotation_data_to_data_set(
 def convert_opf_for_pre_stam_format(
     opf_annot: OpfAnnotation,
     annotation_type_key: AnnotationGroupEnum,
-    resource_file_path: Union[str, Path],
+    resource_file_path: Path,
 ) -> Annotation_Store:
     """
     Convert opf annotation to annotation store for pre-stam format.
@@ -140,7 +138,7 @@ def convert_opf_for_pre_stam_format(
             annotation_id=id,
             span=annotation.span,
             annotation_data=annotation_data,
-            resource_id=resource.resource_id,
+            resource_id=resource.id_,
             payloads=annotation.payloads,
         )
         annotation_store.add_annotation(annotation)

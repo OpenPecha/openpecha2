@@ -13,7 +13,7 @@ from stam_annotator.config import ROOT_DIR, AnnotationGroupEnum
 from stam_annotator.github_token import GITHUB_TOKEN
 from stam_annotator.opf_to_stam import opf_to_stam_pipeline
 from stam_annotator.stam_manager import combine_stams
-from stam_annotator.utility import save_annotation_store
+from stam_annotator.utility import save_annotation_store, sort_dict_by_path_strings
 
 SOURCE_ORG = "OpenPecha-Data"
 DESTINATION_ORG = "PechaData"
@@ -32,7 +32,7 @@ class PechaRepo:
 
     @property
     def pecha_repo_fn(self):
-        return self.base_path / f"{self.source_org}"
+        return self.base_path / f"{self.destination_org}"
 
     @classmethod
     def from_id(cls, id_: str) -> "PechaRepo":
@@ -40,22 +40,31 @@ class PechaRepo:
         return PechaRepo(id_, cls.base_path)
 
     def get_pecha_repo(self):
-        try:
-            org, repo_name, token = self.source_org, self.pecha_id, GITHUB_TOKEN
-            """make a inner folder with source org name and clone the repo in it"""
-            destination_folder = self.base_path / org
-            repo_url = f"https://{token}@github.com/{org}/{repo_name}.git"
-            subprocess.run(["git", "clone", repo_url, destination_folder], check=True)
+        destination_folder = self.base_path / self.source_org / self.pecha_id
+        if destination_folder.exists() and list(destination_folder.rglob("*")):
             print(
-                f"Repository {repo_name} cloned successfully into {destination_folder}"
+                f"Destination folder {destination_folder} already exists and is not empty."
             )
+        else:
+            try:
+                org, repo_name, token = self.source_org, self.pecha_id, GITHUB_TOKEN
+                """make a inner folder with source org name and clone the repo in it"""
 
-        except subprocess.CalledProcessError as e:
-            print(f"Error cloning {repo_name} repository: {e}")
+                repo_url = f"https://{token}@github.com/{org}/{repo_name}.git"
+                subprocess.run(
+                    ["git", "clone", repo_url, str(destination_folder)], check=True
+                )
+                print(
+                    f"Repository {repo_name} cloned successfully into {destination_folder}"
+                )
+
+            except subprocess.CalledProcessError as e:
+                print(f"Error cloning {repo_name} repository: {e}")
 
     def convert_pecha_repo_to_stam(self):
         group_files = get_folder_structure(self.base_path / self.source_org)
-        make_local_folder(self.base_path / self.destination_org)
+        group_files = sort_dict_by_path_strings(group_files)
+        make_local_folder(self.base_path / self.destination_org / self.pecha_id)
         for parent_dir, documents in group_files.items():
             new_parent_dir = replace_parent_folder_name(
                 parent_dir, self.source_org, self.destination_org
@@ -99,14 +108,17 @@ class PechaRepo:
             )
 
             save_annotation_store(
-                combined_stam, new_parent_dir / f"{parent_dir.name}.opf.json"
+                combined_stam,
+                new_parent_dir / f"{parent_dir.name}.opf.json",
+                self.base_path / self.destination_org / self.pecha_id,
             )
+        print(f"Pecha repo {self.pecha_id} converted to stam successfully")
 
     def upload_pecha_repo(self):
         org_name, repo_name = DESTINATION_ORG, self.pecha_id
         repo_is_created = create_github_repo(org_name, repo_name, GITHUB_TOKEN)
         if repo_is_created:
-            project_path = self.base_path / self.destination_org
+            project_path = self.base_path / self.destination_org / self.pecha_id
             repo_name = self.pecha_id
             upload_files_to_github_repo(org_name, repo_name, project_path, GITHUB_TOKEN)
             print(f"Pecha repo {repo_name} uploaded successfully")
@@ -270,12 +282,12 @@ def get_folder_structure(path: Path):
     return grouped_files
 
 
-def replace_parent_folder_name(path: Path, old_name: str, new_name: str):
+def replace_parent_folder_name(path: Path, old_name: str, new_name: str) -> Path:
     """Replace the parent folder name of the path with the new name"""
 
     parts = path.parts
     layers_dir = "layers"
-    """if there are folders presented in layers dir, then the path is trimmed"""
+    """if there are folders(volume name) presented in layers dir, then the path is trimmed"""
     if layers_dir in parts:
         index = parts.index(layers_dir)
         trimmed_path = Path(*parts[: index + 1])

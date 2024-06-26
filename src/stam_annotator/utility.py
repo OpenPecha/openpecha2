@@ -1,4 +1,5 @@
 import json
+from collections import OrderedDict
 from pathlib import Path
 from typing import Dict, Union
 from uuid import uuid4
@@ -21,6 +22,12 @@ def is_json_file_path(file_path: Path) -> bool:
 
 def get_uuid():
     return uuid4().hex
+
+
+def sort_dict_by_path_strings(input_dict):
+    sorted_keys = sorted(input_dict.keys(), key=lambda x: str(x))
+    sorted_dict = OrderedDict((key, input_dict[key]) for key in sorted_keys)
+    return sorted_dict
 
 
 def read_json_to_dict(file_path: Path) -> Dict:
@@ -120,7 +127,9 @@ def load_opa_annotations_from_yaml(yaml_file):
     return data
 
 
-def save_annotation_store(store: AnnotationStore, output_file_path: Union[str, Path]):
+def save_annotation_store(
+    store: AnnotationStore, output_file_path: Union[str, Path], base_dir: Path
+):
     output_file_path = Path(output_file_path)
 
     # Check if the file extension is .json
@@ -129,8 +138,22 @@ def save_annotation_store(store: AnnotationStore, output_file_path: Union[str, P
             f"The file path must lead to a JSON file. Given: {output_file_path}"
         )
 
-    store.set_filename(str(output_file_path))
-    store.save()
+    json_stam = json.loads(store.to_json_string())
+    json_stam = modify_file_path_in_json(json_stam, base_dir)
+    with open(output_file_path, "w") as f:
+        json.dump(json_stam, f, indent=4)
+
+
+def modify_file_path_in_json(json_data: Dict, base_directory) -> Dict:
+    include_path = json_data["resources"][0]["@include"]
+
+    base_directory = str(base_directory)
+    if include_path.startswith(base_directory):
+        modified_path = include_path[len(base_directory) :].lstrip("/")  # noqa
+    else:
+        modified_path = include_path
+    json_data["resources"][0]["@include"] = modified_path
+    return json_data
 
 
 def save_json_file(data: Dict, output_file_path: Union[str, Path]):
@@ -173,19 +196,3 @@ def convert_opf_stam_annotation_to_dictionary(
                         }
                 annotation_dict[annotation.id()]["payload"] = payload_dictionary
     return annotation_dict
-
-
-if __name__ == "__main__":
-    from stam_annotator.config import ROOT_DIR
-
-    yml_file_path = (
-        ROOT_DIR
-        / "P000003"
-        / "OpenPecha-Data"
-        / "P000003.opf"
-        / "layers"
-        / "v001"
-        / "pagination.yml"
-    )
-    opf_yml = load_opf_annotations_from_yaml(yml_file_path)
-    print(opf_yml)

@@ -1,0 +1,97 @@
+{
+  "@type": "AnnotationStore",
+  "@id": "62ca11f6523748398a8c6d37dff689af",
+  "resources": [
+    {
+      "@type": "TextResource",
+      "@id": "v001.txt",
+      "@include": "P000216.opf/base/v001.txt"
+    }
+  ],
+  "annotationsets": [
+    {
+      "@type": "AnnotationDataSet",
+      "@id": "73d9280f0b9448ed981250b232e0f411",
+      "keys": [
+        {
+          "@type": "DataKey",
+          "@id": "Structure Type"
+        }
+      ],
+      "data": [
+        {
+          "@type": "AnnotationData",
+          "@id": "018442048186403eaed5ac5f8b529496",
+          "key": "Structure Type",
+          "value": {
+            "@type": "String",
+            "value": "Author"
+          }
+        },
+        {
+          "@type": "AnnotationData",
+          "@id": "bd43157cd6a64476b56945f4f8a81c14",
+          "key": "Structure Type",
+          "value": {
+            "@type": "String",
+            "value": "BookTitle"
+          }
+        }
+      ]
+    }
+  ],
+  "annotations": [
+    {
+      "@type": "Annotation",
+      "@id": "43ef9f8f26aa4a4889979b84220ed343",
+      "target": {
+        "@type": "TextSelector",
+        "resource": "v001.txt",
+        "offset": {
+          "@type": "Offset",
+          "begin": {
+            "@type": "BeginAlignedCursor",
+            "value": 113
+          },
+          "end": {
+            "@type": "BeginAlignedCursor",
+            "value": 138
+          }
+        }
+      },
+      "data": [
+        {
+          "@type": "AnnotationData",
+          "@id": "018442048186403eaed5ac5f8b529496",
+          "set": "73d9280f0b9448ed981250b232e0f411"
+        }
+      ]
+    },
+    {
+      "@type": "Annotation",
+      "@id": "754f2e335e584009baf2de7708b0a43c",
+      "target": {
+        "@type": "TextSelector",
+        "resource": "v001.txt",
+        "offset": {
+          "@type": "Offset",
+          "begin": {
+            "@type": "BeginAlignedCursor",
+            "value": 0
+          },
+          "end": {
+            "@type": "BeginAlignedCursor",
+            "value": 112
+          }
+        }
+      },
+      "data": [
+        {
+          "@type": "AnnotationData",
+          "@id": "bd43157cd6a64476b56945f4f8a81c14",
+          "set": "73d9280f0b9448ed981250b232e0f411"
+        }
+      ]
+    }
+  ]
+}

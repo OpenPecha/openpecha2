@@ -1,3 +1,4 @@
+import json
 import subprocess
 from pathlib import Path
 
@@ -24,3 +25,15 @@ def clone_repo(org, repo_name, token, destination_folder: Path):
 
     except subprocess.CalledProcessError as e:
         raise RepoCloneError(org, repo_name, e)
+
+
+def add_base_path_to_stam_annotation_files(base_path: Path):
+    for file in base_path.rglob("*.opf.json"):
+        with file.open() as f:
+            json_data = json.load(f)
+
+        include_path = json_data["resources"][0]["@include"]
+        json_data["resources"][0]["@include"] = str(base_path / include_path)
+
+        with file.open("w") as f:
+            json.dump(json_data, f, indent=2)
