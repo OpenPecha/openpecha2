@@ -14,6 +14,9 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    env:
+      GITHUB_TOKEN: dummy_token_value
+
     steps:
     - uses: actions/checkout@v3
     
